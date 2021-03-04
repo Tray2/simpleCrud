@@ -1,0 +1,88 @@
+<?php
+
+
+namespace Tray2\SimpleCrud;
+
+
+class HtmlGenerator
+{
+    protected $model;
+
+    public function __construct($model)
+    {
+        $this->model = $model;
+    }
+
+    public function generateLabel(string $element): string
+    {
+        return "\t" . '<label for="' . $element . '"></label>' . "\n";
+    }
+
+    public function generate(array $parameter): string
+    {
+        $dataTypeTranslator = new DataTypeTranslator();
+        $dataType = $dataTypeTranslator->getDataType($parameter['field'], $parameter['type']);
+        $required = $this->setRequired($parameter['required']);
+        $placeholder = $this->setPlaceholder($parameter['default']);
+
+        $html = $this->generateInput($parameter['field'], $dataType, $placeholder, $required);
+        $html .= $this->generateTextArea($parameter['field'], $dataType, $placeholder, $required);
+        $html .= $this->generateSelect($parameter['field'], $dataType, $required);
+        return $html;
+    }
+
+    protected function setRequired($required): string
+    {
+        if ($required == 'YES') return ' required';
+        return '';
+    }
+
+    protected function setPlaceholder($default): string
+    {
+        if ($default != '') return ' placeholder="' . $default . '"';
+        return '';
+    }
+
+    protected function generateInput($field, string $dataType, string $placeholder, string $required): string
+    {
+        if ($dataType != 'textarea' && $dataType != 'select') {
+            return '<input type="' . $dataType . '" name="' . $field
+                . '" id="' . $field
+                . '" value="{{ old(\'' . $field
+                . '\') }}"'
+                . $placeholder
+                . $required . '>';
+        }
+        return '';
+    }
+
+    protected function generateTextArea($field, string $dataType, string $placeholder, string $required): string
+    {
+        if ($dataType == 'textarea') {
+            return '<textarea name="' . $field
+                . '" id="' . $field
+                . '" value="{{ old(\'' . $field
+                . '\') }}"'
+                . $placeholder
+                . $required . '></textarea>';
+        }
+        return '';
+    }
+
+    protected function generateSelect($field, string $dataType, string $required): string
+    {
+        if ($dataType == 'select') {
+            return '<select name="' . $field
+                . '" id="' . $field
+                . '"'
+                . $required . ">\n"
+                . "\t@foreach(\$books->formats as \$format)\n"
+                . "\t\t<option value=\"{{ \$format->id }}\">{{ \$format->format }}</option>\n"
+                . "\t@endforeach\n"
+                . '</select>';
+        }
+
+        return '';
+    }
+
+}

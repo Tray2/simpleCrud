@@ -1,0 +1,35 @@
+{
+    "name": "tray2/simplecrud",
+    "description": "A package to create create and edit views",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Tray2",
+        "email": "patrik@tray2.se"
+      }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Tray2\\SimpleCrud\\": "src"
+        }
+    },
+    "autoload-dev": {
+      "psr-4": {
+        "Tray2\\SimpleCrud\\Tests\\": "tests",
+        "App\\Models\\": "tests/Models"
+      }
+    },
+    "extra": {
+      "laravel": {
+          "providers": [
+              "Tray2\\SimpleCrud\\SimpleCrudServiceProvider"
+          ]
+      }
+    },
+
+    "require-dev": {
+        "orchestra/testbench": "^6.0",
+        "phpunit/phpunit": "^9.5"
+    }
+}
