@@ -105,8 +105,8 @@ class HtmlGenerator
 
     private function hasValidRelation($relationships, $field): bool
     {
-        $method = substr($field, 0, -3);
-        $methods = Str::plural(substr($field, 0, -3));
+        $method = $this->stripId($field);
+        $methods = Str::plural($this->stripId($field));
 
         if(isset($relationships[$method])
             && $relationships[$method] != 'hasOne') {

@@ -191,5 +191,4 @@ class HtmlGeneratorTest extends TestCase
         $htmlGenerator = new HtmlGenerator('User');
         $this->assertEquals($expected, $htmlGenerator->generate($parameter));
     }
-
 }
