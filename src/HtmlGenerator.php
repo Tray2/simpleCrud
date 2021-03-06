@@ -75,14 +75,27 @@ class HtmlGenerator
     {
         $parser = new ModelParser($this->model);
         $relationships =  $parser->getRelationships();
+        $relationField = $this->stripId($field);
         if ($this->hasValidRelation($relationships, $field)) {
             if ($dataType == 'select') {
                 return '<select name="' . $field
                     . '" id="' . $field
                     . '"'
                     . $required . ">\n"
-                    . "\t@foreach(\$books->formats as \$format)\n"
-                    . "\t\t<option value=\"{{ \$format->id }}\">{{ \$format->format }}</option>\n"
+                    . "\t@foreach(\$"
+                    . strtolower($this->model)
+                    . "->"
+                    . Str::plural($relationField)
+                    . " as \$"
+                    . $relationField
+                    . ")\n"
+                    . "\t\t<option value=\"{{ \$"
+                    . $relationField
+                    . "->id }}\">{{ \$"
+                    . $relationField
+                    . "->"
+                    . $relationField
+                    . " }}</option>\n"
                     . "\t@endforeach\n"
                     . '</select>';
             }
@@ -105,5 +118,10 @@ class HtmlGenerator
             return true;
         }
         return false;
+    }
+
+    protected function stripId($field)
+    {
+        return substr($field, 0, -3);
     }
 }

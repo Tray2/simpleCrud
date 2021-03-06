@@ -168,7 +168,7 @@ class HtmlGeneratorTest extends TestCase
             'default' => ''
         ];
         $expected = "<select name=\"format_id\" id=\"format_id\" required>\n";
-        $expected .= "\t@foreach(\$books->formats as \$format)\n";
+        $expected .= "\t@foreach(\$book->formats as \$format)\n";
         $expected .= "\t\t<option value=\"{{ \$format->id }}\">{{ \$format->format }}</option>\n";
         $expected .= "\t@endforeach\n";
         $expected .= "</select>";
