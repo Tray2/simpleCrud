@@ -4,6 +4,8 @@
 namespace Tray2\SimpleCrud;
 
 
+use Illuminate\Support\Str;
+
 class HtmlGenerator
 {
     protected $model;
@@ -71,18 +73,37 @@ class HtmlGenerator
 
     protected function generateSelect($field, string $dataType, string $required): string
     {
-        if ($dataType == 'select') {
-            return '<select name="' . $field
-                . '" id="' . $field
-                . '"'
-                . $required . ">\n"
-                . "\t@foreach(\$books->formats as \$format)\n"
-                . "\t\t<option value=\"{{ \$format->id }}\">{{ \$format->format }}</option>\n"
-                . "\t@endforeach\n"
-                . '</select>';
+        $parser = new ModelParser($this->model);
+        $relationships =  $parser->getRelationships();
+        if ($this->hasValidRelation($relationships, $field)) {
+            if ($dataType == 'select') {
+                return '<select name="' . $field
+                    . '" id="' . $field
+                    . '"'
+                    . $required . ">\n"
+                    . "\t@foreach(\$books->formats as \$format)\n"
+                    . "\t\t<option value=\"{{ \$format->id }}\">{{ \$format->format }}</option>\n"
+                    . "\t@endforeach\n"
+                    . '</select>';
+            }
         }
-
         return '';
     }
 
+    private function hasValidRelation($relationships, $field): bool
+    {
+        $method = substr($field, 0, -3);
+        $methods = Str::plural(substr($field, 0, -3));
+
+        if(isset($relationships[$method])
+            && $relationships[$method] != 'hasOne') {
+            return true;
+        }
+
+        if(isset($relationships[$methods])
+            && $relationships[$methods] != 'hasOne') {
+            return true;
+        }
+        return false;
+    }
 }

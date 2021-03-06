@@ -74,4 +74,15 @@ class ModelParserTest extends TestCase
         $modelParser = new ModelParser('Record');
         $this->assertEquals( 'sqlite', $modelParser->getConnectionName());
     }
+
+    /**
+    * @test
+    */
+    public function it_returns_the_models_relations()
+    {
+        $modelParser = new ModelParser('Book');
+        $actual = $modelParser->getRelationships();
+        $this->assertArrayHasKey('authors', $actual);
+        $this->assertEquals('belongsTo', $actual['authors']);
+    }
 }

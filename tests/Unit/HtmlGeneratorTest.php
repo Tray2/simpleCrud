@@ -155,11 +155,11 @@ class HtmlGeneratorTest extends TestCase
         $htmlGenerator = new HtmlGenerator('Book');
         $this->assertEquals($expected, $htmlGenerator->generate($parameter));
     }
-    
+
     /**
     * @test
     */
-    public function if_a_foreign_key_is_passed_it_generates_a_select_element()
+    public function one_to_many_relations_creates_a_select()
     {
         $parameter = [
             'field' => 'format_id',
@@ -173,6 +173,22 @@ class HtmlGeneratorTest extends TestCase
         $expected .= "\t@endforeach\n";
         $expected .= "</select>";
         $htmlGenerator = new HtmlGenerator('Book');
+        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+    }
+    
+    /**
+    * @test
+    */
+    public function one_to_one_relations_are_not_shown()
+    {
+        $parameter = [
+            'field' => 'user_id',
+            'type' => 'bigint',
+            'required' => 'YES',
+            'default' => ''
+        ];
+        $expected = '';
+        $htmlGenerator = new HtmlGenerator('User');
         $this->assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
