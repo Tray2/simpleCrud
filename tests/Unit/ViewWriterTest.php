@@ -41,6 +41,19 @@ class ViewWriterTest extends TestCase
         $viewWriter->save('Book', 'create');
     }
 
+    /**
+    * @test
+    */
+    public function the_file_is_named_after_the_view()
+    {
+        $view = resource_path('views/books/index.blade.php');
+        $this->assertFileDoesNotExist($view);
+        $viewWriter = new ViewWriter();
+        $viewWriter->save('Book', 'index');
+        $this->assertFileExists($view);
+
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
