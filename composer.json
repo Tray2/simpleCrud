@@ -17,7 +17,7 @@
     "autoload-dev": {
       "psr-4": {
         "Tray2\\SimpleCrud\\Tests\\": "tests",
-        "App\\Models\\": "tests/Models"
+        "App\\Models\\": "tests/laravel/Models"
       }
     },
     "extra": {

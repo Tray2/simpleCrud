@@ -9,6 +9,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
   public function setUp(): void
   {
     parent::setUp();
+    $this->app->setBasePath(__DIR__ . '/laravel');
     // additional setup
   }
 
