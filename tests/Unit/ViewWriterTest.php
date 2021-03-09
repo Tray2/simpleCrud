@@ -1,6 +1,7 @@
 <?php
 namespace Tray2\SimpleCrud\Tests\Unit;
 
+use Illuminate\Contracts\Filesystem\FileExistsException;
 use Tray2\SimpleCrud\Tests\TestCase;
 use Tray2\SimpleCrud\ViewWriter;
 
@@ -20,10 +21,24 @@ class ViewWriterTest extends TestCase
     */
     public function it_can_write_a_file_to_the_file_system()
     {
-      $file = resource_path('views/books/create.blade.php');
-      $this->assertFileDoesNotExist($file);
-      file_put_contents($file, 'Test');
-      $this->assertFileExists($file);
+      $view = resource_path('views/books/create.blade.php');
+      $this->assertFileDoesNotExist($view);
+      $viewWriter = new ViewWriter();
+      $viewWriter->save('Book', 'create');
+      $this->assertFileExists($view);
+    }
+
+    /**
+    * @test
+    */
+    public function if_the_file_already_exists_throw_an_file_exists_exception()
+    {
+        $file = resource_path('views/books/create.blade.php');
+        file_put_contents($file, 'Test');
+        $this->assertFileExists($file);
+        $this->expectException(FileExistsException::class);
+        $viewWriter = new ViewWriter();
+        $viewWriter->save('Book', 'create');
     }
 
     protected function tearDown(): void
