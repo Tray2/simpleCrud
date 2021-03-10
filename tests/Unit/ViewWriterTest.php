@@ -34,6 +34,7 @@ class ViewWriterTest extends TestCase
     public function if_the_file_already_exists_throw_an_file_exists_exception()
     {
         $file = resource_path('views/books/create.blade.php');
+        mkdir(resource_path('views/books'));
         file_put_contents($file, 'Test');
         $this->assertFileExists($file);
         $this->expectException(FileExistsException::class);
@@ -51,13 +52,26 @@ class ViewWriterTest extends TestCase
         $viewWriter = new ViewWriter();
         $viewWriter->save('Book', 'index');
         $this->assertFileExists($view);
+    }
 
+    /**
+    * @test
+    */
+    public function if_the_directory_does_not_exists_its_created()
+    {
+        $path = resource_path('views/books');
+        $this->assertDirectoryDoesNotExist($path);
+        $viewWriter = new ViewWriter();
+        $viewWriter->save('Book', 'create');
+        $this->assertDirectoryExists($path);
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
         array_map('unlink', glob(resource_path('views/books/*.php')));
+        if (file_exists(resource_path('views/books'))) {
+            rmdir(resource_path('views/books'));
+        }
     }
-
 }

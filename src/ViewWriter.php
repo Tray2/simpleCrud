@@ -12,7 +12,11 @@ class ViewWriter
 {
     public function save($model, $view)
     {
-        $file = resource_path('views/' . Str::lower(Str::plural($model)) . '/' . $view . '.blade.php');
+        $path = resource_path('views/' . Str::lower(Str::plural($model)));
+        $file =  $path . '/' . $view . '.blade.php';
+        if (! File::exists($path)) {
+            File::makeDirectory($path, recursive: true);
+        }
         if (File::exists($file)) {
             throw new FileExistsException();
         }
