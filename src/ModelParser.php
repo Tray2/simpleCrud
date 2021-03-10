@@ -1,6 +1,7 @@
 <?php
 namespace Tray2\SimpleCrud;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use ReflectionClass;
 
 class ModelParser

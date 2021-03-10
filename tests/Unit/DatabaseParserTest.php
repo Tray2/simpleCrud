@@ -4,6 +4,7 @@
 namespace Tray2\SimpleCrud\Tests\Unit;
 
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Tray2\SimpleCrud\DatabaseParser;
 use Tray2\SimpleCrud\Tests\TestCase;
 
@@ -36,6 +37,16 @@ class DatabaseParserTest extends TestCase
         $this->assertEquals('bigint', $tableInformation[0]->data_type);
         $this->assertEquals('NO', $tableInformation[0]->is_nullable);
         $this->assertNull($tableInformation[0]->column_default);
+    }
+
+    /**
+    * @test
+    */
+    public function if_the_table_doesnt_exist_it_throws_an_exception()
+    {
+        $this->expectException(ModelNotFoundException::class);
+        $databaseParser = new DatabaseParser();
+        $tableInformation = $databaseParser->parse('NotExist');
     }
 
 }

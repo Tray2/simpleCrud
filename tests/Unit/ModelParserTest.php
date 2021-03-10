@@ -1,6 +1,7 @@
 <?php
 namespace Tray2\SimpleCrud\Tests\Unit;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Tray2\SimpleCrud\ModelParser;
 use Tray2\SimpleCrud\Tests\TestCase;
 
@@ -84,5 +85,14 @@ class ModelParserTest extends TestCase
         $actual = $modelParser->getRelationships();
         $this->assertArrayHasKey('authors', $actual);
         $this->assertEquals('belongsTo', $actual['authors']);
+    }
+
+    /**
+    * @test
+    */
+    public function if_the_model_doesnt_exists_it_throws_an_exception()
+    {
+        $this->expectException(BindingResolutionException::class);
+        $modelParser = new ModelParser('NoExist');
     }
 }

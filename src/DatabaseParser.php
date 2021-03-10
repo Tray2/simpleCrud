@@ -4,6 +4,7 @@
 namespace Tray2\SimpleCrud;
 
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -12,7 +13,11 @@ class DatabaseParser
     public function parse($model): array
     {
         $table =  Str::plural(Str::snake($model));
-        return $this->getMysqlTableAttributes($table);
+        $information = $this->getMysqlTableAttributes($table);
+        if(count($information) == 0) {
+            throw new ModelNotFoundException();
+        }
+        return $information;
     }
 
     protected function getDatabaseName(): string
