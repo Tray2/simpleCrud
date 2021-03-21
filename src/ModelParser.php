@@ -1,30 +1,41 @@
 <?php
 namespace Tray2\SimpleCrud;
 
-use Illuminate\Contracts\Container\BindingResolutionException;
+use JetBrains\PhpStorm\Pure;
 use ReflectionClass;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use ReflectionException;
 
 class ModelParser
 {
-    protected $relationships = [
-        'Illuminate\Database\Eloquent\Relations\BelongsToMany' => 'belongsToMany',
-        'Illuminate\Database\Eloquent\Relations\BelongsTo' => 'belongsTo',
-        'Illuminate\Database\Eloquent\Relations\HasOne' => 'hasOne',
-        'Illuminate\Database\Eloquent\Relations\HasMany' => 'hasMany',
-        'Illuminate\Database\Eloquent\Relations\HasOneThrough' => 'hasOneThrough',
-        'Illuminate\Database\Eloquent\Relations\HasManyThrough' => 'hasManyThrough',
-        'Illuminate\Database\Eloquent\Relations\MorphOne' => 'morphOne',
-        'Illuminate\Database\Eloquent\Relations\MorphTo' => 'morphTo',
-        'Illuminate\Database\Eloquent\Relations\MorphMany' => 'morphMany',
-        'Illuminate\Database\Eloquent\Relations\MorphToMany' => 'morphToMany',
+    protected array $relationships = [
+        BelongsToMany::class => 'belongsToMany',
+        BelongsTo::class => 'belongsTo',
+        HasOne::class => 'hasOne',
+        HasMany::class => 'hasMany',
+        HasOneThrough::class => 'hasOneThrough',
+        HasManyThrough::class => 'hasManyThrough',
+        MorphOne::class => 'morphOne',
+        MorphTo::class => 'morphTo',
+        MorphMany::class => 'morphMany',
+        MorphToMany::class => 'morphToMany',
         'Illuminate\Database\Eloquent\Relations\MorphedByMany' => 'morphedByMany',
     ];
     protected $namespace;
     protected $model;
-    protected $display;
-    protected $noDisplay = [];
+    protected array $display;
+    protected array $noDisplay = [];
     protected $connectionName;
-    protected $guardedByDefault = [
+    protected array $guardedByDefault = [
       'id',
       'created_at',
       'updated_at',
@@ -45,7 +56,7 @@ class ModelParser
         return $this->noDisplay;
     }
 
-    public function getDisplayItems()
+    public function getDisplayItems(): array
     {
         return $this->display;
     }
@@ -58,7 +69,10 @@ class ModelParser
     public function getRelationships(): array
     {
         $relations = [];
-        $reflect = new ReflectionClass($this->model);
+        try {
+            $reflect = new ReflectionClass($this->model);
+        } catch (ReflectionException $e) {
+        }
 
         foreach ($reflect->getMethods() as $method) {
 
@@ -76,12 +90,12 @@ class ModelParser
         return $relations;
     }
 
-    private function isValidRelation($relationType): bool
+    #[Pure] private function isValidRelation($relationType): bool
     {
         return array_key_exists($relationType, $this->relationships);
     }
 
-    private function populateNoDisplay()
+    private function populateNoDisplay(): void
     {
         $this->noDisplay = array_merge(
             $this->guardedByDefault,
@@ -90,7 +104,7 @@ class ModelParser
         );
     }
 
-    private function populateDisplay()
+    private function populateDisplay(): void
     {
         $this->display = $this->model->getFillable();
     }

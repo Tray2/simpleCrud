@@ -3,6 +3,7 @@
 namespace Tray2\SimpleCrud\Tests;
 
 use Tray2\SimpleCrud\SimpleCrudServiceProvider;
+use Tray2\SimpleCrud\Tests\Unit\MasterLayoutParserTest;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -31,4 +32,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
           'host' => '127.0.0.1'
       ]);
   }
+
+    protected function deleteAll($dir): void
+    {
+        foreach (glob($dir . '/*') as $file) {
+            if (is_dir($file)) {
+                $this->deleteAll($file);
+            } else {
+                unlink($file);
+            }
+        }
+        rmdir($dir);
+    }
 }

@@ -7,19 +7,25 @@ use Tray2\SimpleCrud\Tests\TestCase;
 
 class MasterLayoutParserTest extends TestCase
 {
-    /**
-    * @test
-    */
-    public function it_can_instantiate_the_class()
+    public function setUp(): void
     {
-        $masterLayoutParser = new MasterLayoutParser();
-        $this->assertInstanceOf(MasterLayoutParser::class, $masterLayoutParser);
+        parent::setUp();
+        mkdir(resource_path('views'));
     }
 
     /**
     * @test
     */
-    public function it_returns_true_if_master_layout_is_found()
+    public function it_can_instantiate_the_class(): void
+    {
+        $masterLayoutParser = new MasterLayoutParser();
+        self::assertInstanceOf(MasterLayoutParser::class, $masterLayoutParser);
+    }
+
+    /**
+    * @test
+    */
+    public function it_returns_true_if_master_layout_is_found(): void
     {
         $file1 = resource_path('views/books/create.blade.php');
         $file2 = resource_path('views/layout/app.blade.php');
@@ -29,10 +35,25 @@ class MasterLayoutParserTest extends TestCase
         file_put_contents($file2, '<!DOCTYPE html>');
 
         $masterLayoutParser = new MasterLayoutParser();
-        $this->assertTrue($masterLayoutParser->hasMaster());
-        unlink($file1);
-        unlink($file2);
-        rmdir(resource_path('/views/books'));
-        rmdir(resource_path('/views/layout'));
+        self::assertTrue($masterLayoutParser->hasMaster());
+    }
+    
+    /**
+    * @test
+    */
+    public function it_returns_the_yields_in_the_master_layout(): void
+    {
+        $file = resource_path('views/layout/app.blade.php');
+        mkdir(resource_path('views/layout'));
+        file_put_contents($file, "<!DOCTYPE html> @yield('content') @yield('main')");
+
+        $masterLayoutParser = new MasterLayoutParser();
+        self::assertEquals(['content', 'main'], $masterLayoutParser->getYields());
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this->deleteAll(resource_path('views'));
     }
 }

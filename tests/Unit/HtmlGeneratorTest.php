@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tray2\SimpleCrud\Tests\Unit;
-
 
 use Tray2\SimpleCrud\HtmlGenerator;
 use Tray2\SimpleCrud\Tests\TestCase;
@@ -12,26 +10,26 @@ class HtmlGeneratorTest extends TestCase
     /**
     * @test
     */
-    public function it_can_instantiate_the_class()
+    public function it_can_instantiate_the_class(): void
     {
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertInstanceOf(HtmlGenerator::class, $htmlGenerator);
+        self::assertInstanceOf(HtmlGenerator::class, $htmlGenerator);
     }
 
     /**
     * @test
     */
-    public function it_can_generate_a_label()
+    public function it_can_generate_a_label(): void
     {
         $expected = "\t<label for=\"title\"></label>\n";
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generateLabel('title'));
+        self::assertEquals($expected, $htmlGenerator->generateLabel('title'));
     }
 
     /**
     * @test
     */
-    public function it_can_generate_a_text_input()
+    public function it_can_generate_a_text_input(): void
     {
         $parameter = [
             'field' => 'title',
@@ -41,13 +39,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<input type="text" name="title" id="title" value="{{ old(\'title\') }}">';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
      * @test
      */
-    public function it_can_generate_a_required_text_input()
+    public function it_can_generate_a_required_text_input(): void
     {
         $parameter = [
             'field' => 'title',
@@ -57,13 +55,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<input type="text" name="title" id="title" value="{{ old(\'title\') }}" required>';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
      * @test
      */
-    public function it_can_generate_a_text_input_with_name_and_id_from_the_field()
+    public function it_can_generate_a_text_input_with_name_and_id_from_the_field(): void
     {
         $parameter = [
             'field' => 'subtitle',
@@ -73,13 +71,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<input type="text" name="subtitle" id="subtitle" value="{{ old(\'subtitle\') }}">';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
      * @test
      */
-    public function it_can_generate_a_text_input_old_value_from_the_field()
+    public function it_can_generate_a_text_input_old_value_from_the_field(): void
     {
         $parameter = [
             'field' => 'subtitle',
@@ -89,13 +87,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<input type="text" name="subtitle" id="subtitle" value="{{ old(\'subtitle\') }}">';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
      * @test
      */
-    public function if_the_default_is_set_its_used_to_set_a_placeholder()
+    public function if_the_default_is_set_its_used_to_set_a_placeholder(): void
     {
         $parameter = [
             'field' => 'subtitle',
@@ -105,13 +103,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<input type="text" name="subtitle" id="subtitle" value="{{ old(\'subtitle\') }}" placeholder="subtitle">';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
     * @test
     */
-    public function it_can_generate_a_number_input()
+    public function it_can_generate_a_number_input(): void
     {
         $parameter = [
             'field' => 'no_of_tracks',
@@ -121,13 +119,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<input type="number" name="no_of_tracks" id="no_of_tracks" value="{{ old(\'no_of_tracks\') }}" required>';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
      * @test
      */
-    public function it_can_generate_a_date_input()
+    public function it_can_generate_a_date_input(): void
     {
         $parameter = [
             'field' => 'published_at',
@@ -137,13 +135,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<input type="date" name="published_at" id="published_at" value="{{ old(\'published_at\') }}" required>';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
      * @test
      */
-    public function it_can_generate_a_textarea()
+    public function it_can_generate_a_textarea(): void
     {
         $parameter = [
             'field' => 'blurb',
@@ -153,13 +151,13 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '<textarea name="blurb" id="blurb" value="{{ old(\'blurb\') }}" required></textarea>';
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 
     /**
     * @test
     */
-    public function one_to_many_relations_creates_a_select()
+    public function one_to_many_relations_creates_a_select(): void
     {
         $parameter = [
             'field' => 'format_id',
@@ -173,13 +171,13 @@ class HtmlGeneratorTest extends TestCase
         $expected .= "\t@endforeach\n";
         $expected .= "</select>";
         $htmlGenerator = new HtmlGenerator('Book');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
     
     /**
     * @test
     */
-    public function one_to_one_relations_are_not_shown()
+    public function one_to_one_relations_are_not_shown(): void
     {
         $parameter = [
             'field' => 'user_id',
@@ -189,6 +187,6 @@ class HtmlGeneratorTest extends TestCase
         ];
         $expected = '';
         $htmlGenerator = new HtmlGenerator('User');
-        $this->assertEquals($expected, $htmlGenerator->generate($parameter));
+        self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }
 }
