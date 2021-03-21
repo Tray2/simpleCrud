@@ -1,15 +1,17 @@
-<?php
+<?php /** @noinspection PhpPureAttributeCanBeAddedInspection */
 
 
 namespace Tray2\SimpleCrud;
 
 
 use Illuminate\Support\Str;
-use JetBrains\PhpStorm\Pure;
 
 class HtmlGenerator
 {
-    protected String $model;
+    protected string $model;
+    protected string $placeHolder = '';
+    protected string $required = '';
+
 
     public function __construct($model)
     {
@@ -25,52 +27,48 @@ class HtmlGenerator
     {
         $dataTypeTranslator = new DataTypeTranslator();
         $dataType = $dataTypeTranslator->getDataType($parameter['field'], $parameter['type']);
-        $required = $this->setRequired($parameter['required']);
-        $placeholder = $this->setPlaceholder($parameter['default']);
+        $this->setRequired($parameter['required']);
+        $this->setPlaceholder($parameter['default']);
 
-        $html = $this->generateInput($parameter['field'], $dataType, $placeholder, $required);
-        $html .= $this->generateTextArea($parameter['field'], $dataType, $placeholder, $required);
-        $html .= $this->generateSelect($parameter['field'], $dataType, $required);
+        $html = $this->generateInput($parameter['field'], $dataType);
+        $html .= $this->generateTextArea($parameter['field'], $dataType);
+        $html .= $this->generateSelect($parameter['field'], $dataType);
         return $html;
     }
 
-    protected function setRequired($required): string
+    protected function setRequired($required): void
     {
         if ($required === 'YES') {
-            return ' required';
+            $this->required = 'required';
         }
-        return '';
     }
 
-    protected function setPlaceholder($default): string
+    protected function setPlaceholder($default): void
     {
         if ($default !== '') {
-            return ' placeholder="' . $default . '"';
+            $this->placeHolder =  'placeholder="' . $default . '"';
         }
-        return '';
     }
 
-    protected function generateInput($field, string $dataType, string $placeholder, string $required): string
+    protected function generateInput($field, string $dataType): string
     {
         if ($dataType !== 'textarea' && $dataType !== 'select') {
             return '<input type="' . $dataType . '" name="' . $field
                 . '" id="' . $field
                 . '" value="{{ old(\'' . $field
                 . '\') }}"'
-                . $placeholder
-                . $required . '>';
+                . $this->getPlaceHolder()
+                . $this->getRequired() . '>';
         }
         return '';
     }
 
-    protected function generateTextArea($field, string $dataType, string $placeholder, string $required): string
+    protected function generateTextArea($field, string $dataType): string
     {
         if ($dataType === 'textarea') {
-            return '<textarea name="' . $field
-                . '" id="' . $field
-                . '"'
-                . $placeholder
-                . $required
+            return "<textarea name=\"{$field}\" id=\"{$field}\""
+                . $this->getPlaceHolder()
+                . $this->getRequired()
                 . '>'
                 . '{{ old(\'' . $field . '\') }}'
                 . '</textarea>';
@@ -78,34 +76,30 @@ class HtmlGenerator
         return '';
     }
 
-    protected function generateSelect($field, string $dataType, string $required): string
+    protected function generateSelect($field, string $dataType): string
     {
         $parser = new ModelParser($this->model);
         $relationships =  $parser->getRelationships();
         $relationField = $this->stripId($field);
-        if ($this->hasValidRelation($relationships, $field)) {
-          if ($dataType === 'select') {
-              return '<select name="' . $field
-                  . '" id="' . $field
-                  . '"'
-                  . $required . ">\n"
-                  . "\t@foreach(\$"
-                  . strtolower($this->model)
-                  . "->"
-                  . Str::plural($relationField)
-                  . " as \$"
-                  . $relationField
-                  . ")\n"
-                  . "\t\t<option value=\"{{ \$"
-                  . $relationField
-                  . "->id }}\">{{ \$"
-                  . $relationField
-                  . "->"
-                  . $relationField
-                  . " }}</option>\n"
-                  . "\t@endforeach\n"
-                  . '</select>';
-          }
+        if ($dataType === 'select' && $this->hasValidRelation($relationships, $field)) {
+            return "<select name=\"{$field}\" id=\"{$field}\""
+                . $this->getRequired() . ">\n"
+                . "\t@foreach(\$"
+                . strtolower($this->model)
+                . "->"
+                . Str::plural($relationField)
+                . " as \$"
+                . $relationField
+                . ")\n"
+                . "\t\t<option value=\"{{ \$"
+                . $relationField
+                . "->id }}\">{{ \$"
+                . $relationField
+                . "->"
+                . $relationField
+                . " }}</option>\n"
+                . "\t@endforeach\n"
+                . '</select>';
         }
         return '';
     }
@@ -127,8 +121,24 @@ class HtmlGenerator
         return false;
     }
 
-    #[Pure] protected function stripId($field): bool|string
+    protected function stripId($field): bool|string
     {
         return substr($field, 0, -3);
+    }
+
+    protected function getPlaceHolder(): string
+    {
+        if ($this->placeHolder !== '') {
+            return " {$this->placeHolder}";
+        }
+        return '';
+    }
+
+    protected function getRequired(): string
+    {
+        if ($this->required !== '') {
+            return " {$this->required}";
+        }
+        return '';
     }
 }
