@@ -10,7 +10,7 @@ use Tray2\SimpleCrud\Tests\TestCase;
 
 class DatabaseParserTest extends TestCase
 {
-    protected function useMysqlConnection($app)
+    protected function useMysqlConnection($app): void
     {
         $app->config->set('database.default', 'mysql');
     }
@@ -19,34 +19,34 @@ class DatabaseParserTest extends TestCase
      * @test
      * @environment-setup useMysqlConnection
      */
-    public function it_can_instantiate_the_class()
+    public function it_can_instantiate_the_class(): void
     {
         $databaseParser = new DatabaseParser();
-        $this->assertInstanceOf(DatabaseParser::class, $databaseParser );
+        self::assertInstanceOf(DatabaseParser::class, $databaseParser );
     }
 
     /**
     * @test
     * @environment-setup useMysqlConnection
     */
-    public function it_can_fetch_the_table_information_in_mysql()
+    public function it_can_fetch_the_table_information_in_mysql(): void
     {
         $databaseParser = new DatabaseParser();
         $tableInformation = $databaseParser->parse('Book');
-        $this->assertEquals('id', $tableInformation[0]->column_name);
-        $this->assertEquals('bigint', $tableInformation[0]->data_type);
-        $this->assertEquals('NO', $tableInformation[0]->is_nullable);
-        $this->assertNull($tableInformation[0]->column_default);
+        self::assertEquals('id', $tableInformation[0]->column_name);
+        self::assertEquals('bigint', $tableInformation[0]->data_type);
+        self::assertEquals('NO', $tableInformation[0]->is_nullable);
+        self::assertNull($tableInformation[0]->column_default);
     }
 
     /**
     * @test
     */
-    public function if_the_table_doesnt_exist_it_throws_an_exception()
+    public function if_the_table_doesnt_exist_it_throws_an_exception(): void
     {
         $this->expectException(ModelNotFoundException::class);
         $databaseParser = new DatabaseParser();
-        $tableInformation = $databaseParser->parse('NotExist');
+        $databaseParser->parse('NotExist');
     }
 
 }

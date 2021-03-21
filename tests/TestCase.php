@@ -3,7 +3,6 @@
 namespace Tray2\SimpleCrud\Tests;
 
 use Tray2\SimpleCrud\SimpleCrudServiceProvider;
-use Tray2\SimpleCrud\Tests\Unit\MasterLayoutParserTest;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -21,7 +20,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     ];
   }
 
-  protected function getEnvironmentSetUp($app)
+  protected function getEnvironmentSetUp($app): void
   {
       $app['config']->set('database.default', 'mysql');
       $app['config']->set('database.connections.mysql', [

@@ -66,25 +66,24 @@ class ModelParser
         return $this->connectionName;
     }
 
+    /** @noinspection PhpPossiblePolymorphicInvocationInspection
+     * @noinspection NullPointerExceptionInspection
+     */
     public function getRelationships(): array
     {
         $relations = [];
         try {
             $reflect = new ReflectionClass($this->model);
-        } catch (ReflectionException $e) {
-        }
-
-        foreach ($reflect->getMethods() as $method) {
-
-            $returnType = $method->getReturnType();
-
-            if (! is_null($returnType)) {
-
-                $relationType = $method->getReturnType()->getName();
-                if ($this->isValidRelation($relationType)) {
-                    $relations[$method->getName()] =  $this->relationships[$relationType];
+            foreach ($reflect->getMethods() as $method) {
+                $returnType = $method->getReturnType();
+                if (! is_null($returnType)) {
+                    $relationType = $method->getReturnType()->getName();
+                    if ($this->isValidRelation($relationType)) {
+                        $relations[$method->getName()] =  $this->relationships[$relationType];
+                    }
                 }
             }
+        } catch (ReflectionException) {
         }
 
         return $relations;

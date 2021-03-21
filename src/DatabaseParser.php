@@ -14,7 +14,7 @@ class DatabaseParser
     {
         $table =  Str::plural(Str::snake($model));
         $information = $this->getMysqlTableAttributes($table);
-        if(count($information) == 0) {
+        if(count($information) === 0) {
             throw new ModelNotFoundException();
         }
         return $information;

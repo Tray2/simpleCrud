@@ -5,10 +5,11 @@ namespace Tray2\SimpleCrud;
 
 
 use Illuminate\Support\Str;
+use JetBrains\PhpStorm\Pure;
 
 class HtmlGenerator
 {
-    protected $model;
+    protected String $model;
 
     public function __construct($model)
     {
@@ -35,19 +36,23 @@ class HtmlGenerator
 
     protected function setRequired($required): string
     {
-        if ($required == 'YES') return ' required';
+        if ($required === 'YES') {
+            return ' required';
+        }
         return '';
     }
 
     protected function setPlaceholder($default): string
     {
-        if ($default != '') return ' placeholder="' . $default . '"';
+        if ($default !== '') {
+            return ' placeholder="' . $default . '"';
+        }
         return '';
     }
 
     protected function generateInput($field, string $dataType, string $placeholder, string $required): string
     {
-        if ($dataType != 'textarea' && $dataType != 'select') {
+        if ($dataType !== 'textarea' && $dataType !== 'select') {
             return '<input type="' . $dataType . '" name="' . $field
                 . '" id="' . $field
                 . '" value="{{ old(\'' . $field
@@ -60,13 +65,15 @@ class HtmlGenerator
 
     protected function generateTextArea($field, string $dataType, string $placeholder, string $required): string
     {
-        if ($dataType == 'textarea') {
+        if ($dataType === 'textarea') {
             return '<textarea name="' . $field
                 . '" id="' . $field
-                . '" value="{{ old(\'' . $field
-                . '\') }}"'
+                . '"'
                 . $placeholder
-                . $required . '></textarea>';
+                . $required
+                . '>'
+                . '{{ old(\'' . $field . '\') }}'
+                . '</textarea>';
         }
         return '';
     }
@@ -77,28 +84,28 @@ class HtmlGenerator
         $relationships =  $parser->getRelationships();
         $relationField = $this->stripId($field);
         if ($this->hasValidRelation($relationships, $field)) {
-            if ($dataType == 'select') {
-                return '<select name="' . $field
-                    . '" id="' . $field
-                    . '"'
-                    . $required . ">\n"
-                    . "\t@foreach(\$"
-                    . strtolower($this->model)
-                    . "->"
-                    . Str::plural($relationField)
-                    . " as \$"
-                    . $relationField
-                    . ")\n"
-                    . "\t\t<option value=\"{{ \$"
-                    . $relationField
-                    . "->id }}\">{{ \$"
-                    . $relationField
-                    . "->"
-                    . $relationField
-                    . " }}</option>\n"
-                    . "\t@endforeach\n"
-                    . '</select>';
-            }
+          if ($dataType === 'select') {
+              return '<select name="' . $field
+                  . '" id="' . $field
+                  . '"'
+                  . $required . ">\n"
+                  . "\t@foreach(\$"
+                  . strtolower($this->model)
+                  . "->"
+                  . Str::plural($relationField)
+                  . " as \$"
+                  . $relationField
+                  . ")\n"
+                  . "\t\t<option value=\"{{ \$"
+                  . $relationField
+                  . "->id }}\">{{ \$"
+                  . $relationField
+                  . "->"
+                  . $relationField
+                  . " }}</option>\n"
+                  . "\t@endforeach\n"
+                  . '</select>';
+          }
         }
         return '';
     }
@@ -109,18 +116,18 @@ class HtmlGenerator
         $methods = Str::plural($this->stripId($field));
 
         if(isset($relationships[$method])
-            && $relationships[$method] != 'hasOne') {
+            && $relationships[$method] !== 'hasOne') {
             return true;
         }
 
         if(isset($relationships[$methods])
-            && $relationships[$methods] != 'hasOne') {
+            && $relationships[$methods] !== 'hasOne') {
             return true;
         }
         return false;
     }
 
-    protected function stripId($field)
+    #[Pure] protected function stripId($field): bool|string
     {
         return substr($field, 0, -3);
     }

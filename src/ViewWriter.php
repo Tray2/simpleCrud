@@ -10,7 +10,8 @@ use Illuminate\Support\Str;
 
 class ViewWriter
 {
-    public function save($model, $view)
+    /** @noinspection PhpUnhandledExceptionInspection */
+    public function save($model, $view): void
     {
         $path = resource_path('views/' . Str::lower(Str::plural($model)));
         $file =  $path . '/' . $view . '.blade.php';

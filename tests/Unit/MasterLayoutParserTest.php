@@ -10,6 +10,9 @@ class MasterLayoutParserTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+        if (file_exists(resource_path('views'))) {
+            $this->deleteAll(resource_path('views'));
+        }
         mkdir(resource_path('views'));
     }
 

@@ -149,7 +149,7 @@ class HtmlGeneratorTest extends TestCase
             'required' => 'YES',
             'default' => ''
         ];
-        $expected = '<textarea name="blurb" id="blurb" value="{{ old(\'blurb\') }}" required></textarea>';
+        $expected = '<textarea name="blurb" id="blurb" required>{{ old(\'blurb\') }}</textarea>';
         $htmlGenerator = new HtmlGenerator('Book');
         self::assertEquals($expected, $htmlGenerator->generate($parameter));
     }

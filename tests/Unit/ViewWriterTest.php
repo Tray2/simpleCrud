@@ -10,60 +10,63 @@ class ViewWriterTest extends TestCase
     /**
     * @test
     */
-    public function it_can_instantiate_the_class()
+    public function it_can_instantiate_the_class(): void
     {
         $viewWriter = new ViewWriter();
-        $this->assertInstanceOf(ViewWriter::class, $viewWriter);
+        self::assertInstanceOf(ViewWriter::class, $viewWriter);
     }
-    
+
     /**
-    * @test
-    */
-    public function it_can_write_a_file_to_the_file_system()
+     * @test
+     * @throws FileExistsException
+     */
+    public function it_can_write_a_file_to_the_file_system(): void
     {
       $view = resource_path('views/books/create.blade.php');
-      $this->assertFileDoesNotExist($view);
+      self::assertFileDoesNotExist($view);
       $viewWriter = new ViewWriter();
       $viewWriter->save('Book', 'create');
-      $this->assertFileExists($view);
+      self::assertFileExists($view);
     }
 
     /**
     * @test
     */
-    public function if_the_file_already_exists_throw_an_file_exists_exception()
+    public function if_the_file_already_exists_throw_an_file_exists_exception(): void
     {
         $file = resource_path('views/books/create.blade.php');
         mkdir(resource_path('views/books'));
         file_put_contents($file, 'Test');
-        $this->assertFileExists($file);
+        self::assertFileExists($file);
         $this->expectException(FileExistsException::class);
         $viewWriter = new ViewWriter();
         $viewWriter->save('Book', 'create');
     }
 
     /**
-    * @test
-    */
-    public function the_file_is_named_after_the_view()
+     * @test
+     * @throws FileExistsException
+     */
+    public function the_file_is_named_after_the_view(): void
     {
         $view = resource_path('views/books/index.blade.php');
-        $this->assertFileDoesNotExist($view);
+        self::assertFileDoesNotExist($view);
         $viewWriter = new ViewWriter();
         $viewWriter->save('Book', 'index');
-        $this->assertFileExists($view);
+        self::assertFileExists($view);
     }
 
     /**
-    * @test
-    */
-    public function if_the_directory_does_not_exists_its_created()
+     * @test
+     * @throws FileExistsException
+     */
+    public function if_the_directory_does_not_exists_its_created(): void
     {
         $path = resource_path('views/books');
-        $this->assertDirectoryDoesNotExist($path);
+        self::assertDirectoryDoesNotExist($path);
         $viewWriter = new ViewWriter();
         $viewWriter->save('Book', 'create');
-        $this->assertDirectoryExists($path);
+        self::assertDirectoryExists($path);
     }
 
     protected function tearDown(): void

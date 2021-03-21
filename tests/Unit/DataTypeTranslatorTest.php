@@ -12,10 +12,10 @@ class DataTypeTranslatorTest extends TestCase
     /**
      * @test
      */
-    public function it_can_instantiate_the_class()
+    public function it_can_instantiate_the_class(): void
     {
         $dataTypeTranslator = new DataTypeTranslator();
-        $this->assertInstanceOf(DataTypeTranslator::class, $dataTypeTranslator );
+        self::assertInstanceOf(DataTypeTranslator::class, $dataTypeTranslator );
     }
 
     /**
@@ -25,10 +25,10 @@ class DataTypeTranslatorTest extends TestCase
     * @param $dataType
     * @param $expectedType
     */
-    public function if_returns_the_correct_input_type_for_the_datatype($fieldName, $dataType, $expectedType)
+    public function if_returns_the_correct_input_type_for_the_datatype($fieldName, $dataType, $expectedType): void
     {
         $dataTypeTranslator = new DataTypeTranslator();
-        $this->assertEquals($expectedType, $dataTypeTranslator->getDataType($fieldName, $dataType));
+        self::assertEquals($expectedType, $dataTypeTranslator->getDataType($fieldName, $dataType));
     }
 
     public function mysqlDataTypesProvider(): array

@@ -4,13 +4,16 @@
 namespace Tray2\SimpleCrud;
 
 
+use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\Pure;
+
 class DataTypeTranslator
 {
-    protected $mysqlNumberTypes = ['tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'decimal', 'float', 'double', 'bit'];
-    protected $mysqlTextTypes = ['char', 'varchar'];
-    protected $mysqlClobTypes = ['tinytext', 'text', 'mediumtext', 'longtext'];
-    protected $mysqlDateTypes = ['date', 'time', 'datetime', 'timestamp', 'year'];
-    protected $mysqlDataTypes;
+    protected array $mysqlNumberTypes = ['tinyint', 'smallint', 'mediumint', 'int', 'bigint', 'decimal', 'float', 'double', 'bit'];
+    protected array $mysqlTextTypes = ['char', 'varchar'];
+    protected array $mysqlClobTypes = ['tinytext', 'text', 'mediumtext', 'longtext'];
+    protected array $mysqlDateTypes = ['date', 'time', 'datetime', 'timestamp', 'year'];
+    protected Collection $mysqlDataTypes;
 
     public function __construct()
     {
@@ -24,16 +27,26 @@ class DataTypeTranslator
 
     public function getDataType($field, $dataType): string
     {
-        if ($this->isForeignKey($field)) return 'select';
+        if ($this->isForeignKey($field)) {
+            return 'select';
+        }
         return $this->getColumnType($dataType);
     }
 
     protected function getColumnType($dataType): string
     {
-        if ($this->isNumericalType($dataType)) return 'number';
-        if ($this->isStringType($dataType)) return 'text';
-        if ($this->isDateType($dataType)) return 'date';
-        if ($this->isClobType($dataType)) return 'textarea';
+        if ($this->isNumericalType($dataType)) {
+            return 'number';
+        }
+        if ($this->isStringType($dataType)) {
+            return 'text';
+        }
+        if ($this->isDateType($dataType)) {
+            return 'date';
+        }
+        if ($this->isClobType($dataType)) {
+            return 'textarea';
+        }
         return 'text';
     }
 
@@ -57,9 +70,8 @@ class DataTypeTranslator
         return $this->mysqlDataTypes['clob']->contains($dataType);
     }
 
-    protected function isForeignKey($field): bool
+    #[Pure] protected function isForeignKey($field): bool
     {
-        return (substr($field, -3) == '_id' );
+        return (substr($field, -3) === '_id' );
     }
-
 }
