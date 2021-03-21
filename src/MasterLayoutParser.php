@@ -44,12 +44,21 @@ class MasterLayoutParser
 
     public function getYields()
     {
+        $body = $this->getBody($this->masterPath);
         $pattern = '/@yield[(]\'(\w+)\'[)]/';
-        preg_match_all($pattern, file_get_contents($this->masterPath), $matches);
+        preg_match_all($pattern, $body, $matches);
 
         if (count($matches) > 1) {
             return $matches[1];
         }
         return [];
+    }
+
+    protected function getBody(string $masterPath)
+    {
+        $pattern = '/(?s)(?<=<body>).*(?=<\/body>)/';
+        $masterBody = file_get_contents($masterPath);
+        preg_match($pattern, $masterBody, $match);
+        return $match[0];
     }
 }

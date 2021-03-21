@@ -48,10 +48,23 @@ class MasterLayoutParserTest extends TestCase
     {
         $file = resource_path('views/layout/app.blade.php');
         mkdir(resource_path('views/layout'));
-        file_put_contents($file, "<!DOCTYPE html> @yield('content') @yield('main')");
+        file_put_contents($file, "<!DOCTYPE html> <body> @yield('content') @yield('main') </body>");
 
         $masterLayoutParser = new MasterLayoutParser();
         self::assertEquals(['content', 'main'], $masterLayoutParser->getYields());
+    }
+
+    /**
+    * @test
+    */
+    public function it_does_not_return_yields_outside_the_body(): void
+    {
+        $file = resource_path('views/layout/app.blade.php');
+        mkdir(resource_path('views/layout'));
+        file_put_contents($file, "<!DOCTYPE html><head><title>@yield('title')</title></head><body> @yield('main') </body>");
+
+        $masterLayoutParser = new MasterLayoutParser();
+        self::assertEquals(['main'], $masterLayoutParser->getYields());
     }
 
     protected function tearDown(): void
