@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpPureAttributeCanBeAddedInspection */
 
 
 namespace Tray2\SimpleCrud;
@@ -9,8 +9,9 @@ use Illuminate\Support\Str;
 
 class MasterLayoutParser
 {
-    protected string $masterFile;
-    protected string $masterPath;
+    protected array $masterFiles = [];
+    protected array $masterPaths = [];
+    protected array $yields = [];
 
     public function __construct()
     {
@@ -19,7 +20,7 @@ class MasterLayoutParser
 
     public function hasMaster(): bool
     {
-        return ($this->masterFile !== NULL);
+        return (count($this->masterFiles) > 0);
     }
 
     protected function getMaster(): string
@@ -27,8 +28,8 @@ class MasterLayoutParser
         $views = File::allFiles(resource_path('views'));
         foreach ($views as $view) {
             if ($this->isMasterLayout($view)) {
-                $this->masterPath = $view->getPathName();
-                $this->masterFile =  $view->getFilename();
+                $this->masterPaths[] = $view->getPathName();
+                $this->masterFiles[] =  $view->getFilename();
             }
         }
         return '';
@@ -42,16 +43,18 @@ class MasterLayoutParser
         return false;
     }
 
-    public function getYields()
+    public function getYields(): array
     {
-        $body = $this->getBody($this->masterPath);
-        $pattern = '/@yield[(]\'(\w+)\'[)]/';
-        preg_match_all($pattern, $body, $matches);
-
-        if (count($matches) > 1) {
-            return $matches[1];
+       $i = 0;
+       foreach ($this->masterPaths as $masterPath) {
+           $fileName = str_replace('.blade.php', '', $this->masterFiles[$i]);
+           $i++;
+           $body = $this->getBody($masterPath);
+           $pattern = '/@yield[(]\'(\w+)\'[)]/';
+           preg_match_all($pattern, $body, $matches);
+           $this->yields[$fileName] = $matches[1];
         }
-        return [];
+        return $this->yields;
     }
 
     protected function getBody(string $masterPath)

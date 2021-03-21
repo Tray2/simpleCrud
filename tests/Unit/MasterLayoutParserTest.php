@@ -40,7 +40,7 @@ class MasterLayoutParserTest extends TestCase
         $masterLayoutParser = new MasterLayoutParser();
         self::assertTrue($masterLayoutParser->hasMaster());
     }
-    
+
     /**
     * @test
     */
@@ -51,7 +51,7 @@ class MasterLayoutParserTest extends TestCase
         file_put_contents($file, "<!DOCTYPE html> <body> @yield('content') @yield('main') </body>");
 
         $masterLayoutParser = new MasterLayoutParser();
-        self::assertEquals(['content', 'main'], $masterLayoutParser->getYields());
+        self::assertEquals(['app' => ['content', 'main']], $masterLayoutParser->getYields());
     }
 
     /**
@@ -64,7 +64,21 @@ class MasterLayoutParserTest extends TestCase
         file_put_contents($file, "<!DOCTYPE html><head><title>@yield('title')</title></head><body> @yield('main') </body>");
 
         $masterLayoutParser = new MasterLayoutParser();
-        self::assertEquals(['main'], $masterLayoutParser->getYields());
+        self::assertEquals(['app' => ['main']], $masterLayoutParser->getYields());
+    }
+
+    /**
+    * @test
+    */
+    public function it_can_handle_multiple_layout_files(): void
+    {
+        $file1 = resource_path('views/layout/app.blade.php');
+        $file2 = resource_path('views/layout/admin.blade.php');
+        mkdir(resource_path('views/layout'));
+        file_put_contents($file1, "<!DOCTYPE html><head><title>@yield('title')</title></head><body> @yield('main') </body>");
+        file_put_contents($file2, "<!DOCTYPE html><head><title>@yield('title')</title></head><body> @yield('content') </body>");
+        $masterLayoutParser = new MasterLayoutParser();
+        self::assertEquals(['app' => ['main'], 'admin' => ['content']], $masterLayoutParser->getYields());
     }
 
     protected function tearDown(): void
