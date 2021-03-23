@@ -1,7 +1,7 @@
-<?php
+<?php /** @noinspection PhpPureAttributeCanBeAddedInspection */
+
 namespace Tray2\SimpleCrud;
 
-use JetBrains\PhpStorm\Pure;
 use ReflectionClass;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -89,7 +89,7 @@ class ModelParser
         return $relations;
     }
 
-    #[Pure] private function isValidRelation($relationType): bool
+    private function isValidRelation($relationType): bool
     {
         return array_key_exists($relationType, $this->relationships);
     }
