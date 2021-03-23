@@ -24,4 +24,13 @@ class SimpleCrudCommandTest extends TestCase
         $this->artisan('crud:make SomeModel')
             ->expectsOutput('Target class [App\Models\SomeModel] does not exist.');
     }
+
+    /**
+    * @test
+    */
+    public function an_optional_custom_model_path_can_be_provided(): void
+    {
+        $this->artisan('crud:make SomeModel --modelpath=App')
+            ->expectsOutput('Target class [App\SomeModel] does not exist.');
+    }
 }

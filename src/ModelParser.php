@@ -30,7 +30,7 @@ class ModelParser
         MorphToMany::class => 'morphToMany',
         'Illuminate\Database\Eloquent\Relations\MorphedByMany' => 'morphedByMany',
     ];
-    protected $namespace;
+    protected string $namespace;
     protected $model;
     protected array $display;
     protected array $noDisplay = [];
@@ -42,10 +42,13 @@ class ModelParser
       'deleted_at'
     ];
 
-    public function __construct($model, $namespace = 'App\Models\\')
+    public function __construct($model, $namespace = 'App\Models')
     {
-        $this->namespace = $namespace;
-        $this->model = app($namespace . $model);
+        if ($namespace === '') {
+            $namespace = 'App\Models';
+        }
+        $this->namespace = $namespace . '\\';
+        $this->model = app($this->namespace . $model);
         $this->populateNoDisplay();
         $this->populateDisplay();
         $this->connectionName = $this->model->getConnectionName();
