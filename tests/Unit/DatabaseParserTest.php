@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tray2\SimpleCrud\Tests\Unit;
+namespace Tests\Unit;
 
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
